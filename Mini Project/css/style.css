@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #0a0e1a;
+  --bg2: #111827;
+  --bg3: #1a2235;
+  --card: #151d2e;
+  --border: #1e2d45;
+  --accent: #4f9cf9;
+  --accent2: #a78bfa;
+  --accent3: #34d399;
+  --accent4: #fb923c;
+  --accent5: #f472b6;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --danger: #f87171;
+  --success: #34d399;
+  --glow: 0 0 20px rgba(79,156,249,0.15);
+  --glow2: 0 0 40px rgba(167,139,250,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(79,156,249,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(167,139,250,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(52,211,153,0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  box-shadow: 0 4px 20px rgba(79,156,249,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(79,156,249,0.45);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover {
+  background: var(--bg3);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.btn-danger {
+  background: rgba(248,113,113,0.1);
+  color: var(--danger);
+  border: 1px solid rgba(248,113,113,0.2);
+}
+.btn-danger:hover {
+  background: rgba(248,113,113,0.2);
+}
+
+/* INPUTS */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.input-group input, .input-group select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.input-group input:focus, .input-group select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,156,249,0.1);
+}
+
+.input-group input::placeholder { color: var(--text3); }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,156,249,0.3), transparent);
+}
+
+/* TOAST */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#toast.success { border-color: rgba(52,211,153,0.4); }
+#toast.error { border-color: rgba(248,113,113,0.4); }
+#toast .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#toast.success .dot { background: var(--success); }
+#toast.error .dot { background: var(--danger); }
+#toast.info .dot { background: var(--accent); }

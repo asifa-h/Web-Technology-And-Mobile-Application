@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendLens — Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .app-layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: rgba(17,24,39,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .topbar-brand span { font-size: 22px; }
+
+    .profile-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 8px 16px 8px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text);
+    }
+    .profile-btn:hover {
+      border-color: var(--accent);
+      background: var(--card);
+    }
+
+    .avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      min-width: 180px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      display: none;
+      animation: dropIn 0.2s ease;
+    }
+    .profile-dropdown.open { display: block; }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+    .dropdown-item:hover {
+      background: var(--bg3);
+      color: var(--text);
+    }
+    .dropdown-item.logout {
+      color: var(--danger);
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .dropdown-item.logout:hover { background: rgba(248,113,113,0.1); }
+
+    /* MAIN */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    /* LEFT: CALENDAR */
+    .sidebar {
+      padding: 28px 20px 28px 28px;
+      position: sticky;
+      top: 70px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 14px;
+    }
+
+    /* CALENDAR */
+    .calendar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cal-month {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .cal-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .cal-nav button {
+      width: 30px; height: 30px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text2);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-nav button:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .cal-grid {
+      padding: 14px 16px 16px;
+    }
+
+    .cal-days-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .cal-day-name {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      padding: 4px 0;
+    }
+
+    .cal-dates {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-date {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      position: relative;
+      gap: 2px;
+    }
+    .cal-date:hover:not(.empty) {
+      background: var(--bg3);
+      color: var(--text);
+    }
+    .cal-date.today {
+      background: rgba(79,156,249,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(79,156,249,0.3);
+    }
+    .cal-date.selected {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(79,156,249,0.3);
+    }
+    .cal-date.has-expense::after {
+      content: '';
+      width: 4px; height: 4px;
+      background: var(--accent3);
+      border-radius: 50%;
+      position: absolute;
+      bottom: 3px;
+    }
+    .cal-date.selected::after {
+      background: white;
+    }
+    .cal-date.empty { cursor: default; }
+    .cal-date.other-month { opacity: 0.3; }
+
+    .cal-amount {
+      font-size: 8px;
+      color: var(--accent3);
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+    }
+    .cal-date.selected .cal-amount { color: rgba(255,255,255,0.8); }
+
+    /* RIGHT: CHART + INSIGHTS */
+    .right-panel {
+      padding: 28px 28px 28px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* FILTER TABS */
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Sora', sans-serif;
+    }
+    .filter-tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .filter-tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color: white;
+    }
+
+    .custom-range {
+      display: none;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .custom-range.show { display: flex; }
+    .custom-range input[type="date"] {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 12px;
+    }
+    .custom-range label { font-size: 12px; color: var(--text3); }
+
+    /* PIE CHART */
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .chart-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    .total-badge {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      text-align: right;
+    }
+    .total-badge .lbl { font-size: 10px; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; }
+    .total-badge .val { font-size: 18px; font-weight: 800; color: var(--accent); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+    .chart-body {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pie-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    #pieCanvas {
+      width: 200px;
+      height: 200px;
+    }
+
+    .pie-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .pie-center .pc-count { font-size: 28px; font-weight: 800; }
+    .pie-center .pc-label { font-size: 10px; color: var(--text3); font-weight: 600; letter-spacing: 0.5px; }
+
+    .pie-legend {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: background 0.15s;
+      cursor: default;
+    }
+    .legend-item:hover { background: var(--bg3); }
+
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .legend-amt {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      color: var(--text2);
+    }
+
+    .legend-pct {
+      font-size: 10px;
+      color: var(--text3);
+      width: 32px;
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text3);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--text2); margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; line-height: 1.6; }
+
+    /* AI INSIGHTS */
+    .insights-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .insights-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ai-badge {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: white;
+    }
+
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .insight-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      background: var(--bg3);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .insight-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .insight-text {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+    .insight-text strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-brand">
+        <span>💰</span> SpendLens
+      </div>
+
+      <div class="profile-btn" onclick="toggleDropdown()" id="profileBtn">
+        <div class="avatar" id="avatarEl">?</div>
+        <span class="profile-name" id="profileNameEl">User</span>
+        <span style="font-size:10px; color:var(--text3);">▼</span>
+
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-item">
+            <span>👤</span>
+            <span id="ddName">—</span>
+          </div>
+          <div class="dropdown-item">
+            <span>✉️</span>
+            <span id="ddEmail">—</span>
+          </div>
+          <div class="dropdown-item logout" onclick="doLogout()">
+            <span>🚪</span>
+            <span>Logout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <!-- LEFT: CALENDAR -->
+      <div class="sidebar">
+        <div class="section-label">📅 Select Date</div>
+        <div class="calendar-card">
+          <div class="cal-header">
+            <div class="cal-month" id="calMonth">—</div>
+            <div class="cal-nav">
+              <button onclick="prevMonth()">‹</button>
+              <button onclick="nextMonth()">›</button>
+            </div>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-days-header">
+              <div class="cal-day-name">S</div>
+              <div class="cal-day-name">M</div>
+              <div class="cal-day-name">T</div>
+              <div class="cal-day-name">W</div>
+              <div class="cal-day-name">T</div>
+              <div class="cal-day-name">F</div>
+              <div class="cal-day-name">S</div>
+            </div>
+            <div class="cal-dates" id="calDates"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: CHART + INSIGHTS -->
+      <div class="right-panel">
+        <!-- FILTER TABS -->
+        <div>
+          <div class="section-label">📊 Expense Overview</div>
+          <div class="filter-bar">
+            <button class="filter-tab active" onclick="setFilter('today',this)">Today</button>
+            <button class="filter-tab" onclick="setFilter('weekly',this)">Weekly</button>
+            <button class="filter-tab" onclick="setFilter('monthly',this)">Monthly</button>
+            <button class="filter-tab" onclick="setFilter('ytd',this)">Year to Date</button>
+            <button class="filter-tab" onclick="setFilter('custom',this)">Custom</button>
+          </div>
+          <div class="custom-range" id="customRange">
+            <label>From</label>
+            <input type="date" id="customStart" onchange="updateChart()">
+            <label>To</label>
+            <input type="date" id="customEnd" onchange="updateChart()">
+          </div>
+        </div>
+
+        <!-- PIE CHART -->
+        <div class="chart-card">
+          <div class="chart-title-row">
+            <div>
+              <div class="chart-title" id="chartTitle">Today's Breakdown</div>
+              <div class="chart-subtitle" id="chartSubtitle"></div>
+            </div>
+            <div class="total-badge">
+              <div class="lbl">Total</div>
+              <div class="val" id="totalVal">₹0</div>
+            </div>
+          </div>
+          <div id="chartBody">
+            <div class="empty-state">
+              <div class="icon">📭</div>
+              <h3>No expenses found</h3>
+              <p>Select a date from the calendar and add expenses to see your spending breakdown here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI INSIGHTS -->
+        <div class="insights-card">
+          <div class="insights-header">
+            <div class="chart-title">Spending Insights</div>
+            <div class="ai-badge">✨ AI</div>
+          </div>
+          <div class="insight-list" id="insightList">
+            <div class="insight-item">
+              <div class="insight-icon">💡</div>
+              <div class="insight-text">Add some expenses to get personalized AI insights about your spending habits.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"><span class="dot"></span><span class="msg"></span></div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    if (!Auth.requireLogin()) throw '';
+
+    let currentFilter = 'today';
+    let calYear, calMonth;
+    let currentUser;
+
+    // INIT
+    function init() {
+      currentUser = Auth.getCurrentUser();
+      if (!currentUser) { Auth.logout(); return; }
+
+      // Profile
+      const initials = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+      document.getElementById('avatarEl').textContent = initials;
+      document.getElementById('profileNameEl').textContent = currentUser.name.split(' ')[0];
+      document.getElementById('ddName').textContent = currentUser.name;
+      document.getElementById('ddEmail').textContent = currentUser.email;
+
+      // Calendar
+      const today = new Date();
+      calYear = today.getFullYear();
+      calMonth = today.getMonth();
+      renderCalendar();
+
+      // Chart
+      updateChart();
+    }
+
+    // DROPDOWN
+    function toggleDropdown() {
+      document.getElementById('profileDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', e => {
+      if (!document.getElementById('profileBtn').contains(e.target)) {
+        document.getElementById('profileDropdown').classList.remove('open');
+      }
+    });
+
+    function doLogout() {
+      Auth.logout();
+    }
+
+    // CALENDAR
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calMonth').textContent = months[calMonth] + ' ' + calYear;
+
+      const firstDay = new Date(calYear, calMonth, 1).getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const today = todayStr();
+
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<div class="cal-date empty"></div>';
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const total = Storage.getTotalForDate(currentUser.username, dateStr);
+        const hasExp = total > 0;
+        const isToday = dateStr === today;
+
+        let cls = 'cal-date';
+        if (isToday) cls += ' today';
+        if (hasExp) cls += ' has-expense';
+
+        const amtHtml = hasExp ? `<span class="cal-amount">₹${total >= 1000 ? (total/1000).toFixed(1)+'k' : total.toFixed(0)}</span>` : '';
+
+        html += `<div class="${cls}" onclick="selectDate('${dateStr}')" data-date="${dateStr}">
+          ${d}
+          ${amtHtml}
+        </div>`;
+      }
+
+      document.getElementById('calDates').innerHTML = html;
+    }
+
+    function selectDate(dateStr) {
+      window.location.href = `expenses.html?date=${dateStr}`;
+    }
+
+    function prevMonth() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    }
+
+    // FILTER
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('customRange').classList.toggle('show', f === 'custom');
+      updateChart();
+    }
+
+    function getDateRange() {
+      const today = todayStr();
+      if (currentFilter === 'today') return [today, today];
+      if (currentFilter === 'weekly') return [getMondayOfWeek(), today];
+      if (currentFilter === 'monthly') return [today.slice(0,8)+'01', today];
+      if (currentFilter === 'ytd') return [getJan1(), today];
+      if (currentFilter === 'custom') {
+        const s = document.getElementById('customStart').value;
+        const e = document.getElementById('customEnd').value;
+        if (s && e) return [s, e];
+      }
+      return [today, today];
+    }
+
+    function getFilterLabel() {
+      if (currentFilter === 'today') return ["Today's Breakdown", formatDate(todayStr())];
+      if (currentFilter === 'weekly') return ["This Week's Breakdown", formatDate(getMondayOfWeek()) + " – " + formatDate(todayStr())];
+      if (currentFilter === 'monthly') return ["This Month's Breakdown", new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})];
+      if (currentFilter === 'ytd') return ["Year to Date", "Jan 1 – " + formatDate(todayStr())];
+      const s = document.getElementById('customStart')?.value;
+      const e = document.getElementById('customEnd')?.value;
+      if (s && e) return ["Custom Range", formatDate(s) + " – " + formatDate(e)];
+      return ["Custom Range", "Select dates above"];
+    }
+
+    function updateChart() {
+      const [start, end] = getDateRange();
+      const [title, subtitle] = getFilterLabel();
+      document.getElementById('chartTitle').textContent = title;
+      document.getElementById('chartSubtitle').textContent = subtitle;
+
+      const items = Storage.getExpensesInRange(currentUser.username, start, end);
+      const total = items.reduce((s, i) => s + (parseFloat(i.amount)||0), 0);
+      document.getElementById('totalVal').textContent = formatCurrency(total);
+
+      // Group by category
+      const catMap = {};
+      items.forEach(item => {
+        const cat = item.category || detectCategory(item.title);
+        if (!catMap[cat]) catMap[cat] = 0;
+        catMap[cat] += parseFloat(item.amount) || 0;
+      });
+
+      const cats = Object.entries(catMap).sort((a,b) => b[1]-a[1]);
+
+      if (cats.length === 0) {
+        document.getElementById('chartBody').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <h3>No expenses in this period</h3>
+            <p>Click a date on the calendar to add your expenses.</p>
+          </div>`;
+        renderInsights([]);
+        return;
+      }
+
+      // Build pie chart + legend
+      const bodyEl = document.getElementById('chartBody');
+      bodyEl.innerHTML = `
+        <div class="chart-body">
+          <div class="pie-wrap">
+            <canvas id="pieCanvas" width="200" height="200"></canvas>
+            <div class="pie-center">
+              <div class="pc-count">${cats.length}</div>
+              <div class="pc-label">categories</div>
+            </div>
+          </div>
+          <div class="pie-legend" id="pieLegend"></div>
+        </div>`;
+
+      drawPie(cats, total);
+      renderLegend(cats, total);
+      renderInsights(cats, total);
+    }
+
+    function drawPie(cats, total) {
+      const canvas = document.getElementById('pieCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const cx = 100, cy = 100, r = 85, inner = 55;
+
+      ctx.clearRect(0, 0, 200, 200);
+
+      let angle = -Math.PI / 2;
+      cats.forEach(([cat, amt]) => {
+        const slice = (amt / total) * Math.PI * 2;
+        const color = CATEGORY_COLORS[cat] || '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, angle, angle + slice);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        angle += slice;
+      });
+
+      // Donut hole
+      ctx.beginPath();
+      ctx.arc(cx, cy, inner, 0, Math.PI * 2);
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#151d2e';
+      ctx.fill();
+
+      // Gap lines
+      angle = -Math.PI / 2;
+      cats.forEach(([,amt]) => {
+        const slice = (amt / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(cx + inner * Math.cos(angle), cy + inner * Math.sin(angle));
+        ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+        ctx.strokeStyle = '#0a0e1a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        angle += slice;
+      });
+    }
+
+    function renderLegend(cats, total) {
+      const el = document.getElementById('pieLegend');
+      if (!el) return;
+      el.innerHTML = cats.map(([cat, amt]) => {
+        const pct = ((amt/total)*100).toFixed(1);
+        const color = CATEGORY_COLORS[cat] || '#94a3b8';
+        return `<div class="legend-item">
+          <div class="legend-dot" style="background:${color}"></div>
+          <span class="legend-name">${cat}</span>
+          <span class="legend-amt">${formatCurrency(amt)}</span>
+          <span class="legend-pct">${pct}%</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderInsights(cats, total) {
+      const el = document.getElementById('insightList');
+      if (!cats || cats.length === 0) {
+        el.innerHTML = `<div class="insight-item"><div class="insight-icon">💡</div><div class="insight-text">Add some expenses to get personalized AI insights about your spending habits.</div></div>`;
+        return;
+      }
+
+      const insights = [];
+      const top = cats[0];
+      const topPct = ((top[1]/total)*100).toFixed(0);
+
+      insights.push({ icon: '🏆', text: `Your biggest spend is <strong>${top[0]}</strong>, accounting for <strong>${topPct}%</strong> of your total (${formatCurrency(top[1])}). Consider reviewing this category.` });
+
+      if (cats.length >= 2) {
+        const least = cats[cats.length-1];
+        insights.push({ icon: '✅', text: `Great control on <strong>${least[0]}</strong> — only ${formatCurrency(least[1])} spent. Keep it up!` });
+      }
+
+      if (total > 5000) {
+        insights.push({ icon: '⚠️', text: `Total spending of <strong>${formatCurrency(total)}</strong> in this period seems high. Try setting a budget limit for your top categories.` });
+      } else if (total > 0) {
+        insights.push({ icon: '💪', text: `Total spending of <strong>${formatCurrency(total)}</strong> looks manageable. Stay consistent with your tracking!` });
+      }
+
+      const foodCat = cats.find(([c]) => c === 'Food');
+      if (foodCat && (foodCat[1]/total) > 0.4) {
+        insights.push({ icon: '🍽️', text: `Food takes up over 40% of your budget. Cooking at home a few days a week could save you <strong>${formatCurrency(foodCat[1]*0.3)}</strong> or more.` });
+      }
+
+      if (cats.length > 4) {
+        insights.push({ icon: '📊', text: `Spending is spread across <strong>${cats.length} categories</strong>. Consolidating or cutting smaller categories can simplify your finances.` });
+      }
+
+      el.innerHTML = insights.map(i => `
+        <div class="insight-item">
+          <div class="insight-icon">${i.icon}</div>
+          <div class="insight-text">${i.text}</div>
+        </div>`).join('');
+    }
+
+    init();
+  </script>
+</body>
+</html>

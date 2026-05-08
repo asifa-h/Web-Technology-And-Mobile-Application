@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendLens — Register</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 480px;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .brand-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--accent3), var(--accent));
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 32px rgba(52,211,153,0.3);
+    }
+
+    .brand h1 {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    }
+
+    .auth-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .auth-card .subtitle {
+      color: var(--text3);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .span2 { grid-column: span 2; }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon-wrap input {
+      width: 100%;
+      padding-left: 44px;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    .login-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 16px;
+    }
+    .login-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .strength-bar {
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: all 0.3s;
+      width: 0%;
+    }
+
+    .floating-shapes {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.07;
+      animation: float 10s ease-in-out infinite;
+    }
+    .shape1 { width: 280px; height: 280px; background: var(--accent3); top: -60px; right: -60px; }
+    .shape2 { width: 220px; height: 220px; background: var(--accent2); bottom: -60px; left: -60px; animation-delay: 2s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-15px, 15px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+  </div>
+
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="brand">
+        <div class="brand-icon">✨</div>
+        <h1>Create Account</h1>
+      </div>
+
+      <div class="auth-card">
+        <h2>Join SpendLens</h2>
+        <p class="subtitle">Start tracking your expenses in seconds</p>
+
+        <div class="form-grid">
+          <div class="input-group">
+            <label>Full Name</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="name" placeholder="Your full name">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Username</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">@</span>
+              <input type="text" id="username" placeholder="Choose username">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Date of Birth</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🎂</span>
+              <input type="date" id="dob" style="padding-left:44px;">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Phone Number</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">📱</span>
+              <input type="tel" id="phone" placeholder="10-digit number">
+            </div>
+          </div>
+
+          <div class="input-group span2">
+            <label>Email Address</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="email" placeholder="your@email.com" style="padding-left:44px;">
+            </div>
+          </div>
+
+          <div class="input-group span2">
+            <label>Password</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="password" placeholder="Create a strong password" oninput="checkStrength(this.value)" style="padding-left:44px;">
+              <button class="eye-btn" onclick="togglePwd()">👁️</button>
+            </div>
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+          </div>
+
+          <div class="span2">
+            <button class="btn btn-primary btn-full" onclick="doRegister()">
+              Create Account ✨
+            </button>
+          </div>
+        </div>
+
+        <div class="login-link">
+          Already have an account? <a href="../index.html">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"><span class="dot"></span><span class="msg"></span></div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    Auth.requireGuest();
+
+    function togglePwd() {
+      const inp = document.getElementById('password');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    function checkStrength(val) {
+      const fill = document.getElementById('strengthFill');
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 10) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      const colors = ['#f87171','#fb923c','#facc15','#4ade80','#34d399'];
+      fill.style.width = (score * 20) + '%';
+      fill.style.background = colors[Math.max(0, score - 1)] || '#f87171';
+    }
+
+    function doRegister() {
+      const name = document.getElementById('name').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const dob = document.getElementById('dob').value;
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!name || !username || !dob || !phone || !email || !password) {
+        showToast('Please fill in all fields', 'error'); return;
+      }
+      if (!/^\d{10}$/.test(phone)) {
+        showToast('Phone number must be 10 digits', 'error'); return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Enter a valid email address', 'error'); return;
+      }
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters', 'error'); return;
+      }
+
+      const users = Storage.getUsers();
+      if (users.find(u => u.username === username)) {
+        showToast('Username already taken. Try another.', 'error'); return;
+      }
+      if (users.find(u => u.email === email)) {
+        showToast('Email already registered', 'error'); return;
+      }
+
+      users.push({ name, username, dob, phone, email, password });
+      Storage.saveUsers(users);
+
+      showToast('Account created! Redirecting to login...', 'success');
+      setTimeout(() => { window.location.href = '../index.html'; }, 1200);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doRegister();
+    });
+  </script>
+</body>
+</html>

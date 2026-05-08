@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendLens — Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .brand-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(79,156,249,0.3);
+    }
+
+    .brand h1 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      color: var(--text3);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .auth-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4), var(--glow);
+    }
+
+    .auth-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .auth-card .subtitle {
+      color: var(--text3);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    .form-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+
+    .input-icon-wrap input {
+      width: 100%;
+      padding-left: 44px;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px;
+      transition: color 0.2s;
+    }
+    .eye-btn:hover { color: var(--accent); }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 15px;
+      border-radius: 12px;
+      margin-top: 6px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0 4px;
+      color: var(--text3);
+      font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .register-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .register-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .register-link a:hover { text-decoration: underline; }
+
+    .floating-shapes {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.08;
+      animation: float 8s ease-in-out infinite;
+    }
+    .shape1 { width: 300px; height: 300px; background: var(--accent); top: -100px; left: -100px; animation-delay: 0s; }
+    .shape2 { width: 250px; height: 250px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: 3s; }
+    .shape3 { width: 200px; height: 200px; background: var(--accent3); top: 50%; left: 50%; animation-delay: 1.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+  </div>
+
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="brand">
+        <div class="brand-icon">💰</div>
+        <h1>SpendLens</h1>
+        <p>Track smarter. Save better.</p>
+      </div>
+
+      <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your account to continue</p>
+
+        <div class="form-stack">
+          <div class="input-group">
+            <label>Username</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Password</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+              <button class="eye-btn" onclick="togglePwd()" id="eyeBtn">👁️</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="doLogin()">
+            Sign In →
+          </button>
+
+          <div class="divider">or</div>
+
+          <div class="register-link">
+            New here? <a href="pages/register.html">Create an account</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"><span class="dot"></span><span class="msg"></span></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    Auth.requireGuest();
+
+    function togglePwd() {
+      const inp = document.getElementById('password');
+      const btn = document.getElementById('eyeBtn');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        inp.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function doLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showToast('Please fill in all fields', 'error');
+        return;
+      }
+
+      const users = Storage.getUsers();
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (!user) {
+        showToast('Invalid username or password', 'error');
+        return;
+      }
+
+      Storage.setCurrentUser(username);
+      showToast('Welcome back, ' + user.name + '!', 'success');
+      setTimeout(() => { window.location.href = 'pages/dashboard.html'; }, 800);
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doLogin();
+    });
+  </script>
+</body>
+</html>
